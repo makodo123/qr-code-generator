@@ -1,20 +1,45 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# QR Code Generator
 
-# Run and deploy your AI Studio app
+A modern, minimal web-based QR Code generator built with React, TypeScript, and Vite.
 
-This contains everything you need to run your app locally.
+Enter any URL or text to instantly generate a QR Code, then download it as a PNG.
 
-View your app in AI Studio: https://ai.studio/apps/2bab6a83-f971-4ffc-a940-32aeff943cef
+## Features
 
-## Run Locally
+- Instant QR code generation as you type
+- Download QR code as PNG
+- Clean, minimal UI with Tailwind CSS
+- Fully client-side — no server required for QR generation
 
-**Prerequisites:**  Node.js
+## Tech Stack
 
+- **React 19** + **TypeScript**
+- **Vite** — dev server & bundler
+- **Tailwind CSS v4**
+- **qrcode** — QR code generation
+- **lucide-react** — icons
+
+## Getting Started
+
+**Prerequisites:** Node.js
 
 1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+   ```bash
+   npm install
+   ```
+
+2. Start the dev server:
+   ```bash
+   npm run dev
+   ```
+
+3. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Scripts
+
+| Command | Description |
+|---|---|
+| `npm run dev` | Start development server |
+| `npm run build` | Build for production |
+| `npm run preview` | Preview production build |
+| `npm run lint` | Type check with TypeScript |
