@@ -5,33 +5,36 @@ import { Download, QrCode, Link as LinkIcon } from 'lucide-react';
 export default function QRCodeGenerator() {
   const [text, setText] = useState('');
   const [qrImageUrl, setQrImageUrl] = useState('');
+  const [error, setError] = useState('');
 
   useEffect(() => {
     generateQR();
   }, [text]);
 
   const generateQR = async () => {
+    if (!text) {
+      setQrImageUrl('');
+      setError('');
+      return;
+    }
     try {
-      if (!text) {
-        setQrImageUrl('');
-        return;
-      }
-      // Generate QR code as a Data URL (base64)
       const url = await QRCode.toDataURL(text, {
         width: 300,
         margin: 2,
         color: {
-          dark: '#1a1a1a', // 1a1a1a
-          light: '#ffffff'
-        }
+          dark: '#1a1a1a',
+          light: '#ffffff',
+        },
       });
       setQrImageUrl(url);
-    } catch (err) {
-      console.error('Failed to generate QR code', err);
+      setError('');
+    } catch {
+      setQrImageUrl('');
+      setError('Failed to generate QR code. Please try again.');
     }
   };
 
-  const dl = () => {
+  const handleDownload = () => {
     if (!qrImageUrl) return;
     const a = document.createElement('a');
     a.href = qrImageUrl;
@@ -55,18 +58,28 @@ export default function QRCodeGenerator() {
         </div>
 
         <div className="space-y-6">
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <LinkIcon className="h-5 w-5 text-[#9e9e9e]" />
+          <div>
+            <label htmlFor="qr-input" className="sr-only">
+              URL or text
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <LinkIcon className="h-5 w-5 text-[#9e9e9e]" />
+              </div>
+              <input
+                id="qr-input"
+                type="text"
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                placeholder="https://example.com"
+                className="block w-full pl-11 pr-4 py-3.5 border border-[#e5e5e5] rounded-[16px] text-sm focus:outline-none focus:ring-2 focus:ring-[#1a1a1a] focus:border-transparent transition-all placeholder:text-[#9e9e9e]"
+              />
             </div>
-            <input
-              type="text"
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              placeholder="https://example.com"
-              className="block w-full pl-11 pr-4 py-3.5 border border-[#e5e5e5] rounded-[16px] text-sm focus:outline-none focus:ring-2 focus:ring-[#1a1a1a] focus:border-transparent transition-all placeholder:text-[#9e9e9e]"
-            />
           </div>
+
+          {error && (
+            <p className="text-red-500 text-sm text-center">{error}</p>
+          )}
 
           {qrImageUrl ? (
             <div className="flex flex-col items-center space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
@@ -74,7 +87,8 @@ export default function QRCodeGenerator() {
                 <img src={qrImageUrl} alt="Generated QR Code" className="w-[200px] h-[200px] rounded-[8px]" />
               </div>
               <button
-                onClick={dl}
+                onClick={handleDownload}
+                aria-label="Download QR code as PNG"
                 className="w-full flex items-center justify-center space-x-2 bg-[#1a1a1a] hover:bg-[#333333] text-white py-3.5 rounded-[16px] transition-colors font-medium text-sm"
               >
                 <Download className="w-4 h-4" />
@@ -82,12 +96,14 @@ export default function QRCodeGenerator() {
               </button>
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center space-y-4 py-8 border-2 border-dashed border-[#e5e5e5] rounded-[16px] bg-[#fafafa]">
-              <div className="text-[#9e9e9e]">
-                <QrCode className="w-12 h-12 opacity-20" />
+            !error && (
+              <div className="flex flex-col items-center justify-center space-y-4 py-8 border-2 border-dashed border-[#e5e5e5] rounded-[16px] bg-[#fafafa]">
+                <div className="text-[#9e9e9e]">
+                  <QrCode className="w-12 h-12 opacity-20" />
+                </div>
+                <p className="text-[#9e9e9e] text-sm font-medium">Waiting for input...</p>
               </div>
-              <p className="text-[#9e9e9e] text-sm font-medium">Waiting for input...</p>
-            </div>
+            )
           )}
         </div>
       </div>
